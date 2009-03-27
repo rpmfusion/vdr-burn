@@ -13,7 +13,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.1.0
-Release:        0.17.%{pre}%{?dist}
+Release:        0.18.%{pre}%{?dist}
 Summary:        DVD writing plugin for VDR
 
 Group:          Applications/Multimedia
@@ -40,7 +40,7 @@ Requires:       m2vrequantiser
 Requires:       dvdauthor
 Requires:       mjpegtools
 Requires:       dvd+rw-tools
-Requires:       dejavu-fonts-lgc-sans
+Requires:       dejavu-lgc-sans-fonts
 
 %description
 This plugin enables VDR to write compliant DVDs from VDR recordings
@@ -128,6 +128,9 @@ fi
 
 
 %changelog
+* Fri Mar 27 2009 Felix Kaechele <felix at fetzig dot org> - 0.1.0-0.18.pre21
+- and again
+
 * Sat Jan 03 2009 Felix Kaechele <felix at fetzig dot org> - 0.1.0-0.17.pre21
 - fixed font deps (once again)
 
