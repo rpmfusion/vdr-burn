@@ -3,7 +3,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        DVD writing plugin for VDR
 
 Group:          Applications/Multimedia
@@ -13,17 +13,16 @@ URL:            http://projects.vdr-developer.org/projects/plg-burn
 Source0:        http://projects.vdr-developer.org/attachments/download/832/%{name}-%{version}.tgz
 Source1:        %{name}.conf
 Source2:        http://www.muempf.de/down/genindex-%{gver}.tar.gz
-Patch0:         %{name}-0.1.0-pre21-no-subtitles.patch
 # upstream patch >= vdr-1.7.27
 # http://projects.vdr-developer.org/news/172
-Patch1:         vdr-1.7.27-burn-0.2.0.diff
-Patch2:         %{name}-%{version}-config.patch
+Patch0:         vdr-1.7.27-burn-0.2.0.diff
+Patch1:         %{name}-%{version}-config.patch
 # upstream patch for Fedora 18
 # http://projects.vdr-developer.org/issues/1085
-Patch3:         %{name}-%{version}-PRIO_PGRP.patch
+Patch2:         %{name}-%{version}-PRIO_PGRP.patch
 # upstream patch
 # http://projects.vdr-developer.org/issues/1086
-Patch4:         %{name}-%{version}-fsf-fix.patch
+Patch3:         %{name}-%{version}-fsf-fix.patch
 
 BuildRequires:  vdr-devel >= 1.7.30
 BuildRequires:  boost-devel
@@ -36,6 +35,7 @@ Requires:       dvdauthor
 Requires:       mjpegtools
 Requires:       dvd+rw-tools
 Requires:       dejavu-lgc-sans-fonts
+Conflicts:      ProjectX < 0.90.4.00.b29
 
 %description
 This plugin enables VDR to write compliant DVDs from VDR recordings
@@ -50,23 +50,14 @@ recording summary exceeds one page).
 %setup -q -c -a 2
 
 cd burn-0.2.0
-
 find -name CVS | xargs rm -rf
-
 chmod -c -x *.[ch] genindex/*.[ch] proctools/*.cc proctools/*.h README
-
-if pkg-config --atleast-version 1.5.10 vdr ; then
-# Disable subtitles by default for now with 1.6.x, demux problems
-%patch0 -p1
-fi
-# burn i18n.h patch
+%patch0 -p0
 %patch1 -p0
 %patch2 -p0
 %patch3 -p0
-%patch4 -p0
 
 sed -i -e 's|/var/lib/vdr/|%{vdr_vardir}/|g' chain-archive.c jobs.c vdrburn-*.sh
-
 sed -i -e 's|"Vera"|"DejaVuLGCSans"|g' skins.c
 
 cd ../genindex-%{gver}
@@ -117,6 +108,10 @@ fi
 
 
 %changelog
+* Wed Oct 10 2012 Martin Gansser <linux4martin@gmx.de> - 0.2.0-2
+- removed vdrsync Requirenment
+- removed no-subtitle patch
+
 * Sun Oct 07 2012 Martin Gansser <linux4martin@gmx.de> - 0.2.0-1
 - spec file cleanup
 - rebuild for new release
