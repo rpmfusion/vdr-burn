@@ -3,7 +3,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.2.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        DVD writing plugin for VDR
 
 Group:          Applications/Multimedia
@@ -20,7 +20,7 @@ Patch1:         %{name}-%{version}-config.patch
 # upstream patch for Fedora 18
 # http://projects.vdr-developer.org/issues/1085
 Patch2:         %{name}-%{version}-PRIO_PGRP.patch
-# upstream patch
+# upstream fsf-fix patch
 # http://projects.vdr-developer.org/issues/1086
 Patch3:         %{name}-%{version}-fsf-fix.patch
 
@@ -108,6 +108,9 @@ fi
 
 
 %changelog
+* Thu Oct 11 2012 Martin Gansser <linux4martin@gmx.de> - 0.2.0-3
+- rebuild for Fedora 18.
+
 * Wed Oct 10 2012 Martin Gansser <linux4martin@gmx.de> - 0.2.0-2
 - removed vdrsync Requirenment
 - removed no-subtitle patch
