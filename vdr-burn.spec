@@ -15,7 +15,7 @@ Source1:        %{name}.conf
 Source2:        http://www.muempf.de/down/genindex-%{gver}.tar.gz
 Patch0:         %{name}-%{version}-config.patch
 
-BuildRequires:  vdr-devel >= 1.7.30
+BuildRequires:  vdr-devel >= 1.6.0-41
 BuildRequires:  boost-devel
 BuildRequires:  gd-devel
 Requires:       vdr(abi)%{?_isa} = %{vdr_apiversion}
