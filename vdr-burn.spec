@@ -2,8 +2,8 @@
 %define gver    0.1.3
 
 Name:           vdr-%{pname}
-Version:        0.2.0
-Release:        3%{?dist}
+Version:        0.2.1
+Release:        1%{?dist}
 Summary:        DVD writing plugin for VDR
 
 Group:          Applications/Multimedia
@@ -13,16 +13,7 @@ URL:            http://projects.vdr-developer.org/projects/plg-burn
 Source0:        http://projects.vdr-developer.org/attachments/download/832/%{name}-%{version}.tgz
 Source1:        %{name}.conf
 Source2:        http://www.muempf.de/down/genindex-%{gver}.tar.gz
-# upstream patch >= vdr-1.7.27
-# http://projects.vdr-developer.org/news/172
-Patch0:         vdr-1.7.27-burn-0.2.0.diff
-Patch1:         %{name}-%{version}-config.patch
-# upstream patch for Fedora 18
-# http://projects.vdr-developer.org/issues/1085
-Patch2:         %{name}-%{version}-PRIO_PGRP.patch
-# upstream fsf-fix patch
-# http://projects.vdr-developer.org/issues/1086
-Patch3:         %{name}-%{version}-fsf-fix.patch
+Patch0:         %{name}-%{version}-config.patch
 
 BuildRequires:  vdr-devel >= 1.7.30
 BuildRequires:  boost-devel
@@ -49,13 +40,10 @@ recording summary exceeds one page).
 %prep
 %setup -q -c -a 2
 
-cd burn-0.2.0
+cd burn-0.2.1
 find -name CVS | xargs rm -rf
 chmod -c -x *.[ch] genindex/*.[ch] proctools/*.cc proctools/*.h README
 %patch0 -p0
-%patch1 -p0
-%patch2 -p0
-%patch3 -p0
 
 sed -i -e 's|/var/lib/vdr/|%{vdr_vardir}/|g' chain-archive.c jobs.c vdrburn-*.sh
 sed -i -e 's|"Vera"|"DejaVuLGCSans"|g' skins.c
@@ -108,6 +96,10 @@ fi
 
 
 %changelog
+* Mon Feb 18 2013 Martin Gansser <martinkg@fedoraproject.org> - 0.2.1-1
+- rebuild for new release
+- specfile cleanups
+
 * Thu Oct 11 2012 Martin Gansser <linux4martin@gmx.de> - 0.2.0-3
 - rebuild for Fedora 18.
 
