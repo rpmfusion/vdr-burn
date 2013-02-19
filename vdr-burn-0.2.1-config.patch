@@ -1,0 +1,113 @@
+Index: README
+===================================================================
+--- README.orig	2012-10-07 17:31:04.771395847 +0200
++++ README	2012-10-07 17:31:55.124400166 +0200
+@@ -77,7 +77,7 @@
+ 
+ 3b.(optional) Change the default temporary folder, the default DVD writer device
+    and the default ISO directory with TMPDIR (default: /tmp),
+-   DVDDEV (default: /dev/dvdrw) and ISODIR (default: /pub/export)
++   DVDDEV (default: /dev/dvdrw) and ISODIR (default: video dir)
+ 
+    # make DVDDEV=/dev/cdrecorder ISODIR=/export plugins
+ 
+Index: chain-archive.c
+===================================================================
+RCS file: /var/cvsroot/burn/chain-archive.c,v
+retrieving revision 1.13
+diff -u -r1.13 chain-archive.c
+--- chain-archive.c	16 Sep 2006 18:33:36 -0000	1.13
++++ chain-archive.c	12 Dec 2006 20:31:14 -0000
+@@ -64,7 +64,7 @@
+ 									   bind( &recording::get_graft_point, _2 ),
+ 									   " "
+ 						  )));
+-		graftPoints = format("{0} /dvd.vdr={1}/counters/standard") % graftPoints % plugin::get_config_path();
++		graftPoints = format("{0} /dvd.vdr=/var/lib/vdr/burn/counters/standard") % graftPoints;
+ 
+ 		switch (get_job().get_store_mode()) {
+ 		case storemode_create:
+Index: jobs.c
+===================================================================
+RCS file: /var/cvsroot/burn/jobs.c,v
+retrieving revision 1.35
+diff -u -r1.35 jobs.c
+--- jobs.c	1 Oct 2006 21:22:27 -0000	1.35
++++ jobs.c	12 Dec 2006 20:31:14 -0000
+@@ -389,7 +389,7 @@
+ 	std::string job::get_archive_id()
+ 	{
+ 		std::string archive_id = "";
+-		std::string counter_path = format("{0}/counters/standard") % plugin::get_config_path();
++		std::string counter_path = "/var/lib/vdr/burn/counters/standard";
+ 		std::ifstream f(counter_path.c_str());
+ 		if (!f) {
+ 			proctools::logger::error(proctools::format("couldn't read {0}") % counter_path);
+Index: vdrburn-archive.sh
+===================================================================
+--- vdrburn-archive.sh.orig	2012-10-07 17:35:46.210420545 +0200
++++ vdrburn-archive.sh	2012-10-07 17:38:38.421435235 +0200
+@@ -53,7 +53,7 @@
+ 		RECORDING_DMH="$RECPATH"/"$UPPERRECDIR"_DVD/"$RECDIR"
+ 		
+ 		mkdir -p "$RECORDING_DMH"
+-		cp "$CONFIG_PATH/counters/standard" "$RECORDING_DMH"/dvd.vdr
++		cp "/var/lib/vdr/burn/counters/standard" "$RECORDING_DMH/dvd.vdr"
+ 		# Old style Records ("index.vdr"/"info.vdr")
+ 		if [ -f "$RECORDING_PATH"/index.vdr ]; then
+ 			cp "$RECORDING_PATH"/info.vdr "$RECORDING_DMH"/info.vdr
+@@ -66,8 +66,8 @@
+ 	;;
+ 
+ 	archivemark)
+-		((DVD_ID = `cat $CONFIG_PATH/counters/standard | sed "s/^0*//"` + 1))
+-		printf "%04d\n" $DVD_ID > "$CONFIG_PATH/counters/standard"
++		(DVD_ID = `cat /var/lib/vdr/burn/counters/standard | sed "s/^0*//"` + 1))
++		printf "%04d\n" $DVD_ID > "/var/lib/vdr/burn/counters/standard"
+ 	;;
+ 
+ 	*)
+Index: vdrburn-dvd.sh
+===================================================================
+--- vdrburn-dvd.sh.orig	2012-10-07 17:40:01.859441567 +0200
++++ vdrburn-dvd.sh	2012-10-07 17:48:54.861488725 +0200
+@@ -78,7 +78,7 @@
+ 	;;
+ 
+ 	demux)
+-		[ -r $CONFIG_PATH/vdrburn-dvd.conf ] && . $CONFIG_PATH/vdrburn-dvd.conf
++		[ -r /etc/vdr/plugins/burn/vdrburn-dvd.conf ] && . /etc/vdr/plugins/burn/vdrburn-dvd.conf
+ 		[ -z "$JAVA_EXE" ] && JAVA_EXE=$(which java)
+ 
+ 		[ ! -x "$JAVA_EXE" ] && echo "ERROR: java executable \"$JAVA_EXE\" not found" && exit 1
+@@ -94,7 +94,7 @@
+ 
+ 		$IO_NICE $JAVA_EXE -Djava.awt.headless=true \
+ 				-jar $PROJECTX_JAR \
+-				-ini $CONFIG_PATH/ProjectX.ini \
++				-ini /etc/vdr/plugins/burn/ProjectX.ini \
+ 				$TTXT_OPTS \
+ 				$CUT -id $USED_TRACKS \
+ 				-demux -out "$MPEG_DATA_PATH" -name vdrsync \
+@@ -245,15 +245,16 @@
+ 		echo "Deleting $TEMP_PATH/INDEX_${TRACK_ON_DVD}"
+ 		rm -rf "$TEMP_PATH/INDEX_${TRACK_ON_DVD}"
+ 		echo "Creating "$RECORDING_DMH"/dvd.vdr"
+-		cp "$CONFIG_PATH/counters/standard" "$RECORDING_DMH"/dvd.vdr
++		cp "/var/lib/vdr/burn/counters/standard" "$RECORDING_DMH/dvd.vdr"
+ 		printf "%04d\n" $(echo ${TRACK_ON_DVD} | sed 's/^0*//') >> "$RECORDING_DMH"/dvd.vdr
+ 	;;
+ 
+ 	archivemark)
+ 		echo "Creating $DVDAUTHOR_PATH/dvd.vdr"
+-		cp "$CONFIG_PATH/counters/standard" "$DVDAUTHOR_PATH/dvd.vdr"
+-		((DVD_ID = `cat $CONFIG_PATH/counters/standard | sed "s/^0*//"` + 1))
+-		printf "%04d\n" $DVD_ID > "$CONFIG_PATH/counters/standard"
++		cp "/var/lib/vdr/burn/counters/standard" "$DVDAUTHOR_PATH/dvd.vdr"
++		((DVD_ID = `cat /var/lib/vdr/burn/counters/standard | sed "s/^0*//"` + 1))
++		printf "%04d\n" $DVD_ID > "/var/lib/vdr/burn/counters/standard"
++
+ 	;;
+ 
+ 	mkiso)
+
