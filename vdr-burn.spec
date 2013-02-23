@@ -2,15 +2,15 @@
 %define gver    0.1.3
 
 Name:           vdr-%{pname}
-Version:        0.2.1
-Release:        2%{?dist}
+Version:        0.2.2
+Release:        1%{?dist}
 Summary:        DVD writing plugin for VDR
 
 Group:          Applications/Multimedia
 # genindex is GPLv2+, rest GPL+
 License:        GPL+ and GPLv2+
 URL:            http://projects.vdr-developer.org/projects/plg-burn
-Source0:        http://projects.vdr-developer.org/attachments/download/832/%{name}-%{version}.tgz
+Source0:        http://projects.vdr-developer.org/attachments/download/1252/%{name}-%{version}.tgz
 Source1:        %{name}.conf
 Source2:        http://www.muempf.de/down/genindex-%{gver}.tar.gz
 Patch0:         %{name}-%{version}-config.patch
@@ -40,7 +40,7 @@ recording summary exceeds one page).
 %prep
 %setup -q -c -a 2
 
-cd burn-0.2.1
+cd burn-0.2.2
 find -name CVS | xargs rm -rf
 chmod -c -x *.[ch] genindex/*.[ch] proctools/*.cc proctools/*.h README
 %patch0 -p0
@@ -96,6 +96,9 @@ fi
 
 
 %changelog
+* Sat Feb 23 2013 Martin Gansser <martinkg@fedoraproject.org> - 0.2.2-1
+- rebuild for new release
+
 * Sat Feb 23 2013 Martin Gansser <martinkg@fedoraproject.org> - 0.2.1-2
 - rebuild
 
