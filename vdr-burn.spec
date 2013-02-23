@@ -3,7 +3,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.2.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        DVD writing plugin for VDR
 
 Group:          Applications/Multimedia
@@ -96,6 +96,9 @@ fi
 
 
 %changelog
+* Sat Feb 23 2013 Martin Gansser <martinkg@fedoraproject.org> - 0.2.1-2
+- rebuild
+
 * Mon Feb 18 2013 Martin Gansser <martinkg@fedoraproject.org> - 0.2.1-1
 - rebuild for new release
 - specfile cleanups
