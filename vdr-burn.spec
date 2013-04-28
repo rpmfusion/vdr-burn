@@ -3,7 +3,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.2.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        DVD writing plugin for VDR
 
 Group:          Applications/Multimedia
@@ -102,6 +102,9 @@ fi
 
 
 %changelog
+* Sun Apr 28 2013 Nicolas Chauvet <kwizart@gmail.com> - 0.2.2-3
+- https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
 * Mon Apr 22 2013 Martin Gansser <martinkg@fedoraproject.org> - 0.2.2-2
 - added Makefile locale fix
 - changed build option for new plugin Makefile
