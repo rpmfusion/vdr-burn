@@ -3,7 +3,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.2.2
-Release:        1%{?dist}
+Release:        3%{?dist}
 Summary:        DVD writing plugin for VDR
 
 Group:          Applications/Multimedia
@@ -14,12 +14,12 @@ Source0:        http://projects.vdr-developer.org/attachments/download/832/%{nam
 Source1:        %{name}.conf
 Source2:        http://www.muempf.de/down/genindex-%{gver}.tar.gz
 Patch0:         %{name}-%{version}-config.patch
+Patch1:         %{name}-%{version}-Makefile.patch
 
-BuildRequires:  vdr-devel >= 1.6.0-41
+BuildRequires:  vdr-devel >= 1.7.31
 BuildRequires:  boost-devel
 BuildRequires:  gd-devel
 Requires:       vdr(abi)%{?_isa} = %{vdr_apiversion}
-Requires:       vdrsync
 Requires:       ProjectX
 Requires:       m2vrequantiser
 Requires:       dvdauthor
@@ -44,6 +44,7 @@ cd burn-0.2.2
 find -name CVS | xargs rm -rf
 chmod -c -x *.[ch] genindex/*.[ch] proctools/*.cc proctools/*.h README
 %patch0 -p0
+%patch1 -p1
 
 sed -i -e 's|/var/lib/vdr/|%{vdr_vardir}/|g' chain-archive.c jobs.c vdrburn-*.sh
 sed -i -e 's|"Vera"|"DejaVuLGCSans"|g' skins.c
@@ -55,13 +56,14 @@ cd ..
 
 
 %build
-make -C burn-%{version} %{?_smp_mflags} LIBDIR=. LOCALEDIR=./locale VDRDIR=%{_libdir}/vdr all
+make -C burn-%{version} %{?_smp_mflags} CXXFLAGS="$RPM_OPT_FLAGS -fPIC" LIBDIR=. VDRDIR=. LOCALEDIR=./locale all
 make -C genindex-%{gver} %{?_smp_mflags}
 
 
 %install
 install -dm 755 $RPM_BUILD_ROOT%{vdr_plugindir}/bin
-install -pm 755 burn-%{version}/libvdr-%{pname}.so.%{vdr_apiversion} $RPM_BUILD_ROOT%{vdr_plugindir}
+#install -pm 755 burn-%{version}/libvdr-%{pname}.so.%{vdr_apiversion} $RPM_BUILD_ROOT%{vdr_plugindir}
+install -pm 755 burn-%{version}/libvdr-%{pname}.so $RPM_BUILD_ROOT%{vdr_plugindir}/libvdr-%{pname}.so.%{vdr_apiversion}
 install -pm 755 burn-%{version}/*.sh genindex-%{gver}/genindex \
   $RPM_BUILD_ROOT%{vdr_plugindir}/bin
 install -dm 755 $RPM_BUILD_ROOT%{vdr_configdir}/plugins/burn/skins
@@ -74,6 +76,11 @@ install -Dpm 644 burn-%{version}/burn/counters/standard \
 install -Dpm 644 %{SOURCE1} \
   $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/vdr-plugins.d/%{pname}.conf
 
+# locale
+install -dm 755 $RPM_BUILD_ROOT%{_datadir}/locale
+cp -pR burn-%{version}/locale/* $RPM_BUILD_ROOT%{_datadir}/locale
+
+%find_lang %{name}
 
 %post
 if [ $1 -gt 1 ] ; then # maybe upgrading from < 0.1.0?
@@ -81,8 +88,7 @@ if [ $1 -gt 1 ] ; then # maybe upgrading from < 0.1.0?
     %{vdr_configdir}/reccmds.conf >/dev/null 2>&1 || :
 fi
 
-
-%files
+%files -f %{name}.lang
 %defattr(-,root,root,-)
 %doc burn-%{version}/COPYING burn-%{version}/HISTORY burn-%{version}/README README.genindex
 %config(noreplace) %{_sysconfdir}/sysconfig/vdr-plugins.d/%{pname}.conf
@@ -92,10 +98,20 @@ fi
 %{vdr_plugindir}/bin/vdrburn-dvd.sh
 %{vdr_plugindir}/libvdr-%{pname}.so.%{vdr_apiversion}
 %defattr(-,%{vdr_user},root)
-%config(noreplace) %{vdr_vardir}/burn/
+%config(noreplace) %{vdr_vardir}/%{pname}
 
 
 %changelog
+* Sun Apr 28 2013 Nicolas Chauvet <kwizart@gmail.com> - 0.2.2-3
+- https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
+* Mon Apr 22 2013 Martin Gansser <martinkg@fedoraproject.org> - 0.2.2-2
+- added Makefile locale fix
+- changed build option for new plugin Makefile
+- removed vdrsync Requirement
+- fixed typos
+- rebuild
+
 * Sat Feb 23 2013 Martin Gansser <martinkg@fedoraproject.org> - 0.2.2-1
 - rebuild for new release
 
@@ -107,7 +123,7 @@ fi
 - rebuild for Fedora 18.
 
 * Wed Oct 10 2012 Martin Gansser <linux4martin@gmx.de> - 0.2.0-2
-- removed vdrsync Requirenment
+- removed vdrsync Requirement
 - removed no-subtitle patch
 
 * Sun Oct 07 2012 Martin Gansser <linux4martin@gmx.de> - 0.2.0-1
