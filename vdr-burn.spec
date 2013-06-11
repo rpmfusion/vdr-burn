@@ -1,32 +1,32 @@
-%define pname   burn
-%define gver    0.1.3
+%global gver    0.1.3
+%global pname   burn
+%global __provides_exclude_from ^%{vdr_libdir}/.*\\.so.*$
 
 Name:           vdr-%{pname}
 Version:        0.2.2
-Release:        2%{?dist}
+Release:        5%{?dist}
 Summary:        DVD writing plugin for VDR
 
-Group:          Applications/Multimedia
 # genindex is GPLv2+, rest GPL+
 License:        GPL+ and GPLv2+
 URL:            http://projects.vdr-developer.org/projects/plg-burn
-Source0:        http://projects.vdr-developer.org/attachments/download/832/%{name}-%{version}.tgz
+Source0:        http://projects.vdr-developer.org/attachments/download/1252/%{name}-%{version}.tgz
 Source1:        %{name}.conf
 Source2:        http://www.muempf.de/down/genindex-%{gver}.tar.gz
-Patch0:         %{name}-%{version}-config.patch
-Patch1:         %{name}-%{version}-Makefile.patch
+Patch0:         %{name}-0.2.2-config.patch
 
-BuildRequires:  vdr-devel >= 1.7.31
+BuildRequires:  vdr-devel >= 1.7.38
 BuildRequires:  boost-devel
-BuildRequires:  gd-devel
+BuildRequires:  gd-devel >= 2.0.33-9.3
+BuildRequires:  gettext
 Requires:       vdr(abi)%{?_isa} = %{vdr_apiversion}
-Requires:       ProjectX
+Requires:       ProjectX >= 0.90.4.00.b29
 Requires:       m2vrequantiser
 Requires:       dvdauthor
 Requires:       mjpegtools
 Requires:       dvd+rw-tools
-Requires:       dejavu-lgc-sans-fonts
-Conflicts:      ProjectX < 0.90.4.00.b29
+Requires:       dejavu-sans-fonts
+Requires:       pxsup2dast
 
 %description
 This plugin enables VDR to write compliant DVDs from VDR recordings
@@ -40,14 +40,13 @@ recording summary exceeds one page).
 %prep
 %setup -q -c -a 2
 
-cd burn-0.2.2
-find -name CVS | xargs rm -rf
-chmod -c -x *.[ch] genindex/*.[ch] proctools/*.cc proctools/*.h README
-%patch0 -p0
-%patch1 -p1
+mv %{pname}-%{version} burn ; cd burn
+
+%patch0 -p1
 
 sed -i -e 's|/var/lib/vdr/|%{vdr_vardir}/|g' chain-archive.c jobs.c vdrburn-*.sh
-sed -i -e 's|"Vera"|"DejaVuLGCSans"|g' skins.c
+
+sed -i -e 's|"Vera"|"DejaVuSans"|g' skins.c
 
 cd ../genindex-%{gver}
 sed -i -e 's/-g -O2/$(RPM_OPT_FLAGS)/' Makefile
@@ -56,52 +55,44 @@ cd ..
 
 
 %build
-make -C burn-%{version} %{?_smp_mflags} CXXFLAGS="$RPM_OPT_FLAGS -fPIC" LIBDIR=. VDRDIR=. LOCALEDIR=./locale all
+# main build not parallel clean (libvdr-burn.so -> proctools/libproctools.a)
+make -C burn ISODIR=%{vdr_videodir} all
 make -C genindex-%{gver} %{?_smp_mflags}
 
 
 %install
-install -dm 755 $RPM_BUILD_ROOT%{vdr_plugindir}/bin
-#install -pm 755 burn-%{version}/libvdr-%{pname}.so.%{vdr_apiversion} $RPM_BUILD_ROOT%{vdr_plugindir}
-install -pm 755 burn-%{version}/libvdr-%{pname}.so $RPM_BUILD_ROOT%{vdr_plugindir}/libvdr-%{pname}.so.%{vdr_apiversion}
-install -pm 755 burn-%{version}/*.sh genindex-%{gver}/genindex \
-  $RPM_BUILD_ROOT%{vdr_plugindir}/bin
+%make_install -C burn
+install -dm 755 $RPM_BUILD_ROOT%{vdr_libdir}/bin
+install -pm 755 burn/*.sh genindex-%{gver}/genindex \
+  $RPM_BUILD_ROOT%{vdr_libdir}/bin
 install -dm 755 $RPM_BUILD_ROOT%{vdr_configdir}/plugins/burn/skins
-cp -pR burn-%{version}/burn/* $RPM_BUILD_ROOT%{vdr_configdir}/plugins/burn
+cp -pR burn/burn/* $RPM_BUILD_ROOT%{vdr_configdir}/plugins/burn
 rm -rf $RPM_BUILD_ROOT%{vdr_configdir}/plugins/burn/{counters,fonts/*}
-ln -s %{_datadir}/fonts/dejavu/DejaVuLGCSans.ttf \
+ln -s %{_datadir}/fonts/dejavu/DejaVuSans.ttf \
   $RPM_BUILD_ROOT%{vdr_configdir}/plugins/burn/fonts/
-install -Dpm 644 burn-%{version}/burn/counters/standard \
+install -Dpm 644 burn/burn/counters/standard \
   $RPM_BUILD_ROOT%{vdr_vardir}/burn/counters/standard
 install -Dpm 644 %{SOURCE1} \
   $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/vdr-plugins.d/%{pname}.conf
-
-# locale
-install -dm 755 $RPM_BUILD_ROOT%{_datadir}/locale
-cp -pR burn-%{version}/locale/* $RPM_BUILD_ROOT%{_datadir}/locale
-
 %find_lang %{name}
 
-%post
-if [ $1 -gt 1 ] ; then # maybe upgrading from < 0.1.0?
-  %{__perl} -pi -e 's/^.*(burnmark|handlearchived)\.sh.*\n$//' \
-    %{vdr_configdir}/reccmds.conf >/dev/null 2>&1 || :
-fi
 
 %files -f %{name}.lang
-%defattr(-,root,root,-)
-%doc burn-%{version}/COPYING burn-%{version}/HISTORY burn-%{version}/README README.genindex
+%doc burn/COPYING burn/HISTORY burn/README README.genindex
 %config(noreplace) %{_sysconfdir}/sysconfig/vdr-plugins.d/%{pname}.conf
 %config(noreplace) %{vdr_configdir}/plugins/%{pname}/
-%{vdr_plugindir}/bin/genindex
-%{vdr_plugindir}/bin/vdrburn-archive.sh
-%{vdr_plugindir}/bin/vdrburn-dvd.sh
-%{vdr_plugindir}/libvdr-%{pname}.so.%{vdr_apiversion}
+%{vdr_libdir}/bin/genindex
+%{vdr_libdir}/bin/vdrburn-archive.sh
+%{vdr_libdir}/bin/vdrburn-dvd.sh
+%{vdr_libdir}/libvdr-%{pname}.so.%{vdr_apiversion}
 %defattr(-,%{vdr_user},root)
-%config(noreplace) %{vdr_vardir}/%{pname}
-
+%config(noreplace) %{vdr_vardir}/burn/
+%defattr(-,root,root,-)
 
 %changelog
+* Sun Apr 28 2013 Nicolas Chauvet <kwizart@gmail.com> - 0.2.2-3
+- https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
 * Mon Apr 22 2013 Martin Gansser <martinkg@fedoraproject.org> - 0.2.2-2
 - added Makefile locale fix
 - changed build option for new plugin Makefile
@@ -179,7 +170,7 @@ fi
 * Tue Dec 12 2006 Ville Skyttä <ville.skytta at iki.fi> - 0.1.0-0.6.pre21
 - 0.1.0-pre21, include private copy of genindex (0.1.3) for now.
 
-* Sat Nov  4 2006 Ville Skyttä <ville.skytta at iki.fi> - 0.0.009-16
+* Sat Nov 4 2006 Ville Skyttä <ville.skytta at iki.fi> - 0.0.009-16
 - Rebuild for VDR 1.4.4.
 
 * Fri Oct 06 2006 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> 0.0.009-15
@@ -260,7 +251,7 @@ fi
 - Rebuild for VDR 1.3.33.
 
 * Sun Sep 11 2005 Ville Skyttä <ville.skytta at iki.fi> - 0.0.6g-1.lvn.6.pre3
-- Rebuild for VDR 1.3.32.
+- Rebuild for VDR 1.3.32
 
 * Tue Aug 30 2005 Ville Skyttä <ville.skytta at iki.fi> - 0.0.6g-1.lvn.5.pre3
 - Rebuild for VDR 1.3.31.
@@ -276,3 +267,4 @@ fi
 
 * Fri Aug 12 2005 Ville Skyttä <ville.skytta at iki.fi> - 0.0.6g-1.lvn.1.pre3
 - Update URLs.
+
