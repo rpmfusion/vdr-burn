@@ -3,7 +3,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.2.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        DVD writing plugin for VDR
 
 Group:          Applications/Multimedia
@@ -102,6 +102,9 @@ fi
 
 
 %changelog
+* Wed Jun 12 2013 Nicolas Chauvet <kwizart@gmail.com> - 0.2.2-4
+- Rebuilt for GD 2.1.0
+
 * Sun Apr 28 2013 Nicolas Chauvet <kwizart@gmail.com> - 0.2.2-3
 - https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
