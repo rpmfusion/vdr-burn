@@ -4,7 +4,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.2.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPLv2+, rest GPL+
@@ -89,9 +89,14 @@ install -Dpm 644 %{SOURCE1} \
 %config(noreplace) %{vdr_vardir}/burn/
 %defattr(-,root,root,-)
 
+
 %changelog
-* Sun Jun 30 2013 Martin Gansser <martinkg@fedoraproject.org> - 0.2.2-4
-- rebuild
+* Thu Jun 13 2013 Martin Gansser <martinkg@fedoraproject.org> - 0.2.2-5
+- changes for the new Makefile style 
+- specfile cleanups
+
+* Wed Jun 12 2013 Nicolas Chauvet <kwizart@gmail.com> - 0.2.2-4
+- Rebuilt for GD 2.1.0
 
 * Sun Apr 28 2013 Nicolas Chauvet <kwizart@gmail.com> - 0.2.2-3
 - https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
@@ -111,7 +116,7 @@ install -Dpm 644 %{SOURCE1} \
 - specfile cleanups
 
 * Thu Oct 11 2012 Martin Gansser <linux4martin@gmx.de> - 0.2.0-3
-- rebuild for Fedora 18.
+- rebuild for Fedora 18
 
 * Wed Oct 10 2012 Martin Gansser <linux4martin@gmx.de> - 0.2.0-2
 - removed vdrsync Requirement
@@ -120,8 +125,8 @@ install -Dpm 644 %{SOURCE1} \
 * Sun Oct 07 2012 Martin Gansser <linux4martin@gmx.de> - 0.2.0-1
 - spec file cleanup
 - rebuild for new release
-- Adapt to VDR 1.7.30.
-- added priority header patch for Fedora 18.
+- Adapt to VDR 1.7.30
+- added priority header patch for Fedora 18
 
 * Fri Mar 02 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.1.0-0.20.pre21
 - Rebuilt for c++ ABI breakage
