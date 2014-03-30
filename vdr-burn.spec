@@ -4,7 +4,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.2.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPLv2+, rest GPL+
@@ -15,7 +15,7 @@ Source1:        %{name}.conf
 Source2:        http://www.muempf.de/down/genindex-%{gver}.tar.gz
 Patch0:         %{name}-0.2.2-config.patch
 
-BuildRequires:  vdr-devel >= 1.7.38
+BuildRequires:  vdr-devel >= 2.0.6
 BuildRequires:  boost-devel
 BuildRequires:  gd-devel >= 2.0.33-9.3
 BuildRequires:  gettext
@@ -91,6 +91,9 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Sun Mar 30 2014 Martin Gansser <martinkg@fedoraproject.org> - 0.2.2-6
+- Rebuild
+
 * Thu Jun 13 2013 Martin Gansser <martinkg@fedoraproject.org> - 0.2.2-5
 - changes for the new Makefile style 
 - specfile cleanups
