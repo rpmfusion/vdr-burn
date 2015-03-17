@@ -4,7 +4,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.2.2
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPLv2+, rest GPL+
@@ -14,6 +14,7 @@ Source0:        http://projects.vdr-developer.org/attachments/download/1252/%{na
 Source1:        %{name}.conf
 Source2:        http://www.muempf.de/down/genindex-%{gver}.tar.gz
 Patch0:         %{name}-0.2.2-config.patch
+Patch1:         %{name}-vdr2.1.2-compat.patch
 
 BuildRequires:  vdr-devel >= 2.0.6
 BuildRequires:  boost-devel
@@ -43,6 +44,7 @@ recording summary exceeds one page).
 mv %{pname}-%{version} burn ; cd burn
 
 %patch0 -p1
+%patch1 -p1
 
 sed -i -e 's|/var/lib/vdr/|%{vdr_vardir}/|g' chain-archive.c jobs.c vdrburn-*.sh
 
@@ -78,7 +80,8 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %files -f %{name}.lang
-%doc burn/COPYING burn/HISTORY burn/README README.genindex
+%doc burn/HISTORY burn/README README.genindex
+%license burn/COPYING
 %config(noreplace) %{_sysconfdir}/sysconfig/vdr-plugins.d/%{pname}.conf
 %config(noreplace) %{vdr_configdir}/plugins/%{pname}/
 %{vdr_libdir}/bin/genindex
@@ -91,6 +94,10 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Tue Mar 17 2015 Martin Gansser <martinkg@fedoraproject.org> - 0.2.2-8
+- added vdr-burn-vdr2.1.2-compat.patch
+- mark license files as %%license where available
+
 * Mon Sep 01 2014 Sérgio Basto <sergio@serjux.com> - 0.2.2-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
