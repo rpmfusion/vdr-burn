@@ -3,18 +3,17 @@
 %global __provides_exclude_from ^%{vdr_libdir}/.*\\.so.*$
 
 Name:           vdr-%{pname}
-Version:        0.2.2
-Release:        8%{?dist}
+Version:        0.3.0
+Release:        1%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPLv2+, rest GPL+
 License:        GPL+ and GPLv2+
-URL:            http://projects.vdr-developer.org/projects/plg-burn
-Source0:        http://projects.vdr-developer.org/attachments/download/1252/%{name}-%{version}.tgz
+URL:            https://projects.vdr-developer.org/projects/plg-burn
+Source0:        https://projects.vdr-developer.org/attachments/download/2028/%{name}-%{version}.tgz
 Source1:        %{name}.conf
 Source2:        http://www.muempf.de/down/genindex-%{gver}.tar.gz
-Patch0:         %{name}-0.2.2-config.patch
-Patch1:         %{name}-vdr2.1.2-compat.patch
+Patch0:         %{name}-0.3.0-config.patch
 
 BuildRequires:  vdr-devel >= 2.0.6
 BuildRequires:  boost-devel
@@ -40,14 +39,9 @@ recording summary exceeds one page).
 
 %prep
 %setup -q -c -a 2
-
 mv %{pname}-%{version} burn ; cd burn
-
-%patch0 -p1
-%patch1 -p1
-
-sed -i -e 's|/var/lib/vdr/|%{vdr_vardir}/|g' chain-archive.c jobs.c vdrburn-*.sh
-
+%patch0 -p2
+sed -i -e 's|/var/lib/vdr/|%{vdr_vardir}/|g' chain-archive.c jobs.c scripts/vdrburn-*.sh
 sed -i -e 's|"Vera"|"DejaVuSans"|g' skins.c
 
 cd ../genindex-%{gver}
@@ -63,17 +57,22 @@ make -C genindex-%{gver} %{?_smp_mflags}
 
 
 %install
-%make_install -C burn
-install -dm 755 $RPM_BUILD_ROOT%{vdr_libdir}/bin
-install -pm 755 burn/*.sh genindex-%{gver}/genindex \
-  $RPM_BUILD_ROOT%{vdr_libdir}/bin
+make -C burn install-lib install-sh install-res install-i18n DESTDIR=%{buildroot}
+
+install -pm 755 genindex-%{gver}/genindex \
+  $RPM_BUILD_ROOT%{vdr_bindir}
 install -dm 755 $RPM_BUILD_ROOT%{vdr_configdir}/plugins/burn/skins
-cp -pR burn/burn/* $RPM_BUILD_ROOT%{vdr_configdir}/plugins/burn
-rm -rf $RPM_BUILD_ROOT%{vdr_configdir}/plugins/burn/{counters,fonts/*}
+install -Dpm 644 burn/config/ProjectX.ini $RPM_BUILD_ROOT%{vdr_configdir}/plugins/burn/
+install -Dpm 644 burn/config/vdrburn-dvd.conf $RPM_BUILD_ROOT%{vdr_configdir}/plugins/burn/
+
+# remove bundling font
+rm -rf $RPM_BUILD_ROOT%{vdr_resdir}/plugins/burn/{counters,fonts/*}
 ln -s %{_datadir}/fonts/dejavu/DejaVuSans.ttf \
-  $RPM_BUILD_ROOT%{vdr_configdir}/plugins/burn/fonts/
-install -Dpm 644 burn/burn/counters/standard \
-  $RPM_BUILD_ROOT%{vdr_vardir}/burn/counters/standard
+  $RPM_BUILD_ROOT%{vdr_resdir}/plugins/burn/fonts/
+
+install -Dpm 644 burn/config/counters/standard \
+  $RPM_BUILD_ROOT%{vdr_vardir}/burn/config/counters/standard
+
 install -Dpm 644 %{SOURCE1} \
   $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/vdr-plugins.d/%{pname}.conf
 %find_lang %{name}
@@ -84,9 +83,10 @@ install -Dpm 644 %{SOURCE1} \
 %license burn/COPYING
 %config(noreplace) %{_sysconfdir}/sysconfig/vdr-plugins.d/%{pname}.conf
 %config(noreplace) %{vdr_configdir}/plugins/%{pname}/
-%{vdr_libdir}/bin/genindex
-%{vdr_libdir}/bin/vdrburn-archive.sh
-%{vdr_libdir}/bin/vdrburn-dvd.sh
+%{vdr_resdir}/plugins/%{pname}/
+%{vdr_bindir}/genindex
+%{vdr_bindir}/vdrburn-archive.sh
+%{vdr_bindir}/vdrburn-dvd.sh
 %{vdr_libdir}/libvdr-%{pname}.so.%{vdr_apiversion}
 %defattr(-,%{vdr_user},root)
 %config(noreplace) %{vdr_vardir}/burn/
@@ -94,6 +94,9 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Sun Apr 03 2016 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-1
+- Update to 0.3.0
+
 * Tue Mar 17 2015 Martin Gansser <martinkg@fedoraproject.org> - 0.2.2-8
 - added vdr-burn-vdr2.1.2-compat.patch
 - mark license files as %%license where available
