@@ -1,0 +1,11 @@
+--- menuburn.c.orig	2016-05-07 17:59:01.411687398 +0200
++++ menuburn.c	2016-05-07 18:00:32.771953590 +0200
+@@ -369,7 +369,7 @@
+ 
+ 				menu::recording_item* item = new menu::recording_item(rec, m_pathLevel);
+ 				string itemText( item->Text() );
+-				if (!item->is_directory() && (is_H264 | !is_MPEG2))
++				if (!item->is_directory() && is_H264)
+ 					item->SetSelectable(false);
+ 				if (itemText.length() != 0 && (lastItem == 0 || itemText != lastText)) {
+ 					// select directory we are coming from as current item

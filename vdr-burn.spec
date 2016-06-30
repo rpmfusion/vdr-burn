@@ -4,7 +4,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.3.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPLv2+, rest GPL+
@@ -96,6 +96,9 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Sat Jun 25 2016 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-3
+- rebuild due new libvpx version
+
 * Sat May 07 2016 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-2
 - Added vdr-burn-0.3.0-old-sd-recordings.patch
 
