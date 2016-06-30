@@ -4,7 +4,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.3.0
-Release:        1%{?dist}
+Release:        3%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPLv2+, rest GPL+
@@ -14,6 +14,7 @@ Source0:        https://projects.vdr-developer.org/attachments/download/2028/%{n
 Source1:        %{name}.conf
 Source2:        http://www.muempf.de/down/genindex-%{gver}.tar.gz
 Patch0:         %{name}-0.3.0-config.patch
+Patch1:         %{name}-0.3.0-old-sd-recordings.patch
 
 BuildRequires:  vdr-devel >= 2.0.6
 BuildRequires:  boost-devel
@@ -41,6 +42,7 @@ recording summary exceeds one page).
 %setup -q -c -a 2
 mv %{pname}-%{version} burn ; cd burn
 %patch0 -p2
+%patch1 -p0
 sed -i -e 's|/var/lib/vdr/|%{vdr_vardir}/|g' chain-archive.c jobs.c scripts/vdrburn-*.sh
 sed -i -e 's|"Vera"|"DejaVuSans"|g' skins.c
 
@@ -94,6 +96,12 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Sat Jun 25 2016 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-3
+- rebuild due new libvpx version
+
+* Sat May 07 2016 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-2
+- Added vdr-burn-0.3.0-old-sd-recordings.patch
+
 * Sun Apr 03 2016 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-1
 - Update to 0.3.0
 
