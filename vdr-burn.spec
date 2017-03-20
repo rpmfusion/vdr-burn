@@ -4,7 +4,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.3.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPLv2+, rest GPL+
@@ -96,6 +96,9 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Mon Mar 20 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 0.3.0-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Sat Jun 25 2016 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-3
 - rebuild due new libvpx version
 
