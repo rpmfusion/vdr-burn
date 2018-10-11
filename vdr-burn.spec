@@ -16,6 +16,7 @@ Source2:        http://www.muempf.de/down/genindex-%{gver}.tar.gz
 Patch0:         %{name}-0.3.0-config.patch
 Patch1:         %{name}-0.3.0-old-sd-recordings.patch
 
+BuildRequires:  gcc-c++
 BuildRequires:  vdr-devel >= 2.0.6
 BuildRequires:  boost-devel
 BuildRequires:  gd-devel >= 2.0.33-9.3
@@ -97,7 +98,7 @@ install -Dpm 644 %{SOURCE1} \
 
 %changelog
 * Thu Oct 11 2018 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-10
-- Rebuilt
+- Add BR  gcc-c++
 
 * Sun Aug 19 2018 Leigh Scott <leigh123linux@googlemail.com> - 0.3.0-9
 - Rebuilt for Fedora 29 Mass Rebuild binutils issue
