@@ -4,7 +4,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.3.0
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPLv2+, rest GPL+
@@ -96,6 +96,9 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Thu Oct 11 2018 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-10
+- Rebuilt
+
 * Sun Aug 19 2018 Leigh Scott <leigh123linux@googlemail.com> - 0.3.0-9
 - Rebuilt for Fedora 29 Mass Rebuild binutils issue
 
