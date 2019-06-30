@@ -4,7 +4,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.3.0
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPLv2+, rest GPL+
@@ -46,6 +46,11 @@ mv %{pname}-%{version} burn ; cd burn
 %patch1 -p0
 sed -i -e 's|/var/lib/vdr/|%{vdr_vardir}/|g' chain-archive.c jobs.c scripts/vdrburn-*.sh
 sed -i -e 's|"Vera"|"DejaVuSans"|g' skins.c
+
+sed -i -e 's|std::auto_ptr|std::unique_ptr|' jobs.h
+sed -i -e 's|std::auto_ptr<chain_vdr> m_process;|std::unique_ptr<chain_vdr> m_process;|' jobs.h
+sed -i -e 's|std::auto_ptr<job> m_pending;|std::unique_ptr<job> m_pending;|' manager.h
+sed -i -e 's|auto_ptr<process> dtemp( proc );|std::unique_ptr<process> dtemp( proc );|' proctools/chain.cc
 
 cd ../genindex-%{gver}
 sed -i -e 's/-g -O2/$(RPM_OPT_FLAGS)/' Makefile
@@ -97,6 +102,9 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Sun Jun 30 2019 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-13
+- Rebuilt for new VDR API version
+
 * Tue Jun 18 2019 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-12
 - Rebuilt for new VDR API version
 
