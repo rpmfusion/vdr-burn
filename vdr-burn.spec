@@ -1,10 +1,16 @@
 %global gver    0.1.3
 %global pname   burn
 %global __provides_exclude_from ^%{vdr_libdir}/.*\\.so.*$
+# version we want build against
+%global vdr_version 2.6.1
+%if 0%{?fedora} >= 38
+%global vdr_version 2.6.2
+%endif
+
 
 Name:           vdr-%{pname}
 Version:        0.3.0
-Release:        27%{?dist}
+Release:        28%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPLv2+, rest GPL+
@@ -52,11 +58,13 @@ sed -i -e 's|std::auto_ptr<chain_vdr> m_process;|std::unique_ptr<chain_vdr> m_pr
 sed -i -e 's|std::auto_ptr<job> m_pending;|std::unique_ptr<job> m_pending;|' manager.h
 sed -i -e 's|auto_ptr<process> dtemp( proc );|std::unique_ptr<process> dtemp( proc );|' proctools/chain.cc
 
+# fix deprecated warnings pkg-config
+sed -i -e 's|gdlib-config|pkg-config gdlib|' Makefile
+
 cd ../genindex-%{gver}
 sed -i -e 's/-g -O2/$(RPM_OPT_FLAGS)/' Makefile
 f=README ; iconv -f iso-8859-1 -t utf-8 -o ../README.genindex $f
 cd ..
-
 
 %build
 # main build not parallel clean (libvdr-burn.so -> proctools/libproctools.a)
@@ -102,6 +110,9 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Fri Dec 02 2022 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-28
+- Rebuilt for new VDR API version
+
 * Mon Aug 08 2022 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 0.3.0-27
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild and ffmpeg
   5.1
