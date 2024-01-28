@@ -4,13 +4,13 @@
 # version we want build against
 %global vdr_version 2.6.3
 %if 0%{?fedora} >= 40
-%global vdr_version 2.6.5
+%global vdr_version 2.6.6
 %endif
 
 
 Name:           vdr-%{pname}
 Version:        0.3.0
-Release:        32%{?dist}
+Release:        33%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPLv2+, rest GPL+
@@ -110,6 +110,9 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Fri Jan 26 2024 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-33
+- Rebuilt for new VDR API version
+
 * Tue Jan 09 2024 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-32
 - Rebuilt for new VDR API version
 
