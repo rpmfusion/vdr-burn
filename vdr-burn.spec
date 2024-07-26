@@ -4,13 +4,13 @@
 # version we want build against
 %global vdr_version 2.6.3
 %if 0%{?fedora} >= 40
-%global vdr_version 2.6.7
+%global vdr_version 2.6.9
 %endif
 
 
 Name:           vdr-%{pname}
 Version:        0.3.0
-Release:        35%{?dist}
+Release:        36%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPLv2+, rest GPL+
@@ -48,8 +48,8 @@ recording summary exceeds one page).
 %prep
 %setup -q -c -a 2
 mv %{pname}-%{version} burn ; cd burn
-%patch0 -p2
-%patch1 -p0
+%patch 0 -p2
+%patch 1 -p0
 sed -i -e 's|/var/lib/vdr/|%{vdr_vardir}/|g' chain-archive.c jobs.c scripts/vdrburn-*.sh
 sed -i -e 's|"Vera"|"DejaVuSans"|g' skins.c
 
@@ -110,6 +110,9 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Wed Jul 24 2024 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-36
+- Rebuilt for new VDR API version 2.6.9
+
 * Sat Apr 20 2024 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-35
 - Rebuilt for new VDR API version
 
