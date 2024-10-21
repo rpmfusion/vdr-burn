@@ -1,20 +1,23 @@
 %global gver    0.1.3
 %global pname   burn
 %global __provides_exclude_from ^%{vdr_libdir}/.*\\.so.*$
-# version we want build against
+# version we want to build against
 %global vdr_version 2.6.3
-%if 0%{?fedora} >= 40
+# Set vdr_version based on Fedora version
+%if 0%{?fedora} >= 42
+%global vdr_version 2.7.2
+%elif 0%{?fedora} >= 40
 %global vdr_version 2.6.9
 %endif
 
 
 Name:           vdr-%{pname}
 Version:        0.3.0
-Release:        36%{?dist}
+Release:        37%{?dist}
 Summary:        DVD writing plugin for VDR
 
-# genindex is GPLv2+, rest GPL+
-License:        GPL+ and GPLv2+
+# genindex is GPL-2.0-or-later, rest GPL-1.0-or-later
+License:        GPL-1.0-or-later AND GPL-2.0-or-later
 URL:            https://projects.vdr-developer.org/projects/plg-burn
 Source0:        https://projects.vdr-developer.org/attachments/download/2028/%{name}-%{version}.tgz
 Source1:        %{name}.conf
@@ -110,6 +113,9 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Mon Oct 21 2024 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-37
+- Rebuilt for new VDR API version 2.7.3
+
 * Wed Jul 24 2024 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-36
 - Rebuilt for new VDR API version 2.6.9
 
