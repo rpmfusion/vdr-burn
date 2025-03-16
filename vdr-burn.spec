@@ -1,19 +1,15 @@
 %global gver    0.1.3
 %global pname   burn
 %global __provides_exclude_from ^%{vdr_libdir}/.*\\.so.*$
-# version we want to build against
-%global vdr_version 2.6.3
+%global vdr_version 2.6.9
 # Set vdr_version based on Fedora version
 %if 0%{?fedora} >= 42
-%global vdr_version 2.7.2
-%elif 0%{?fedora} >= 40
-%global vdr_version 2.6.9
+%global vdr_version 2.7.4
 %endif
-
 
 Name:           vdr-%{pname}
 Version:        0.3.0
-Release:        38%{?dist}
+Release:        39%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPL-2.0-or-later, rest GPL-1.0-or-later
@@ -113,6 +109,9 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Sun Mar 16 2025 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-39
+- Rebuilt for new VDR API version 2.7.4
+
 * Tue Jan 28 2025 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 0.3.0-38
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_42_Mass_Rebuild
 
