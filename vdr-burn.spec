@@ -4,7 +4,7 @@
 
 # Set vdr_version based on Fedora version
 %if 0%{?fedora} >= 43
-%global vdr_version 2.7.5
+%global vdr_version 2.7.6
 %elif 0%{?fedora} == 42
 %global vdr_version 2.7.4
 %else
@@ -13,7 +13,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.3.0
-Release:        40%{?dist}
+Release:        41%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPL-2.0-or-later, rest GPL-1.0-or-later
@@ -113,6 +113,9 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Sat Jun 21 2025 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-41
+- Rebuilt for new VDR API version 2.7.6
+
 * Tue May 27 2025 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-40
 - Rebuilt for new VDR API version 2.7.5
 
