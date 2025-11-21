@@ -12,17 +12,17 @@
 %endif
 
 Name:           vdr-%{pname}
-Version:        0.3.0
-Release:        43%{?dist}
+Version:        0.3.1
+Release:        1%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPL-2.0-or-later, rest GPL-1.0-or-later
 License:        GPL-1.0-or-later AND GPL-2.0-or-later
-URL:            https://projects.vdr-developer.org/projects/plg-burn
-Source0:        https://projects.vdr-developer.org/attachments/download/2028/%{name}-%{version}.tgz
+URL:            https://github.com/FireFlyVDR/vdr-plugin-burn
+Source0:        https://github.com/FireFlyVDR/vdr-plugin-burn/archive/refs/tags/v%{version}.tar.gz
 Source1:        %{name}.conf
 Source2:        http://www.muempf.de/down/genindex-%{gver}.tar.gz
-Patch0:         %{name}-0.3.0-config.patch
+Patch0:         %{name}-0.3.1-config.patch
 Patch1:         %{name}-0.3.0-old-sd-recordings.patch
 
 BuildRequires:  gcc-c++
@@ -50,7 +50,7 @@ recording summary exceeds one page).
 
 %prep
 %setup -q -c -a 2
-mv %{pname}-%{version} burn ; cd burn
+mv vdr-plugin-burn-0.3.1 burn ; cd burn
 %patch 0 -p2
 %patch 1 -p0
 sed -i -e 's|/var/lib/vdr/|%{vdr_vardir}/|g' chain-archive.c jobs.c scripts/vdrburn-*.sh
@@ -113,6 +113,9 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Fri Nov 21 2025 Martin Gansser <martinkg@fedoraproject.org> - 0.3.1-1
+- Update to 0.3.1
+
 * Tue Jul 29 2025 Martin Gansser <martinkg@fedoraproject.org> - 0.3.0-43
 - Rebuilt for new VDR API version 2.7.7
 

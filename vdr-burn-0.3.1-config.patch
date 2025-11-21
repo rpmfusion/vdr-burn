@@ -1,5 +1,5 @@
---- vdr-burn-0.3.0/burn/config/vdrburn-dvd.conf.orig	2016-04-04 13:29:13.283022168 +0200
-+++ vdr-burn-0.3.0/burn/config/vdrburn-dvd.conf	2016-04-04 13:29:57.162550209 +0200
+--- vdr-burn-0.3.1/burn/config/vdrburn-dvd.conf.orig	2025-11-21 08:48:12.959074579 +0100
++++ vdr-burn-0.3.1/burn/config/vdrburn-dvd.conf	2025-11-21 08:48:43.775287771 +0100
 @@ -1,5 +1,5 @@
  # settings for vdrburn-dvd.sh
  
@@ -8,10 +8,10 @@
 -export PROJECTX_JAR=/usr/share/java/ProjectX.jar
 +export JAVA_EXE=/usr/bin/java
 +export PROJECTX_JAR=/usr/lib/java/ProjectX.jar
---- vdr-burn-0.3.0/burn/chain-archive.c.orig	2016-04-04 12:59:36.291995898 +0200
-+++ vdr-burn-0.3.0/burn/chain-archive.c	2016-04-04 13:01:49.450721007 +0200
-@@ -64,7 +64,7 @@
- 									   bind( &recording::get_graft_point, _2 ),
+--- vdr-burn-0.3.1/burn/chain-archive.c.orig	2025-11-21 08:49:13.893355311 +0100
++++ vdr-burn-0.3.1/burn/chain-archive.c	2025-11-21 08:50:48.988026017 +0100
+@@ -65,7 +65,7 @@
+ 									   boost::bind( &recording::get_graft_point, _2 ),
  									   " "
  						  )));
 -		graftPoints = format("{0} /dvd.vdr={1}/counters/standard") % graftPoints % plugin::get_config_path();
@@ -19,9 +19,9 @@
  
  		switch (get_job().get_store_mode()) {
  		case storemode_create:
---- vdr-burn-0.3.0/burn/jobs.c.orig	2016-04-04 13:04:51.767224226 +0200
-+++ vdr-burn-0.3.0/burn/jobs.c	2016-04-04 13:05:20.201710025 +0200
-@@ -431,7 +431,7 @@
+--- vdr-burn-0.3.1/burn/jobs.c.orig	2025-11-21 08:51:13.231450835 +0100
++++ vdr-burn-0.3.1/burn/jobs.c	2025-11-21 08:52:28.265419493 +0100
+@@ -432,7 +432,7 @@
  	std::string job::get_archive_id()
  	{
  		std::string archive_id = "";
@@ -30,8 +30,8 @@
  		std::ifstream f(counter_path.c_str());
  		if (!f) {
  			proctools::logger::error(proctools::format("couldn't read {0}") % counter_path);
---- vdr-burn-0.3.0/burn/Makefile.orig	2016-04-04 13:06:11.645248345 +0200
-+++ vdr-burn-0.3.0/burn/Makefile	2016-04-04 13:09:45.150313115 +0200
+--- vdr-burn-0.3.1/burn/Makefile.orig	2025-11-21 08:53:05.976788411 +0100
++++ vdr-burn-0.3.1/burn/Makefile	2025-11-21 08:55:09.550598298 +0100
 @@ -82,7 +82,7 @@
  endif
  
@@ -50,9 +50,9 @@
  DEFINES += -DTTXT_SUBTITLES
  endif
  
---- vdr-burn-0.3.0/burn/README.orig	2016-04-04 13:15:48.472323162 +0200
-+++ vdr-burn-0.3.0/burn/README	2016-04-04 13:16:36.035630537 +0200
-@@ -65,8 +65,8 @@
+--- vdr-burn-0.3.1/burn/README.orig	2025-11-21 08:55:44.530592239 +0100
++++ vdr-burn-0.3.1/burn/README	2025-11-21 08:57:34.216487931 +0100
+@@ -66,8 +66,8 @@
  
     Optionally you can change some defaults:
     - default temporary folder   BURN_TMPDIR (default: /tmp) must be a UNIX filesystem
@@ -63,7 +63,7 @@
  
     e.g.:
     # make BURN_DVDDEV=/dev/cdrecorder BURN_ISODIR=/export plugins
-@@ -102,7 +102,7 @@
+@@ -103,7 +103,7 @@
    -d DIR,   --datadir=DIR   use DIR for temporary datafiles
                              (default: /var/spool/video)
    -D DEV    --dvd=DEV       use DEV as DVD Writer
@@ -72,8 +72,8 @@
    -i DIR    --iso=DIR       use DIR to store ISO images
                              (default: /pub/export)
  
---- vdr-burn-0.3.0/burn/scripts/vdrburn-archive.sh.orig	2016-04-04 13:17:43.275979347 +0200
-+++ vdr-burn-0.3.0/burn/scripts/vdrburn-archive.sh	2016-04-04 13:19:43.025189413 +0200
+--- vdr-burn-0.3.1/burn/scripts/vdrburn-archive.sh.orig	2025-11-21 08:58:07.377371906 +0100
++++ vdr-burn-0.3.1/burn/scripts/vdrburn-archive.sh	2025-11-21 09:00:21.901257997 +0100
 @@ -53,7 +53,7 @@
  		RECORDING_DMH="$RECPATH"/"$UPPERRECDIR"_DVD/"$RECDIR"
  		
@@ -83,7 +83,7 @@
  		# Old style Records ("index.vdr"/"info.vdr")
  		if [ -f "$RECORDING_PATH"/index.vdr ]; then
  			cp "$RECORDING_PATH"/info.vdr "$RECORDING_DMH"/info.vdr
-@@ -66,8 +66,8 @@
+@@ -66,8 +66,9 @@
  	;;
  
  	archivemark)
@@ -91,11 +91,12 @@
 -		printf "%04d\n" $DVD_ID > "$CONFIG_PATH/counters/standard"
 +		((DVD_ID = `cat /var/lib/vdr/burn/counters/standard | sed "s/^0*//"` + 1))
 +		printf "%04d\n" $DVD_ID > "/var/lib/vdr/burn/counters/standard"
++
  	;;
  
  	*)
---- vdr-burn-0.3.0/burn/scripts/vdrburn-dvd.sh.orig	2016-04-04 14:15:48.842270835 +0200
-+++ vdr-burn-0.3.0/burn/scripts/vdrburn-dvd.sh	2016-04-04 14:19:22.062328925 +0200
+--- vdr-burn-0.3.1/burn/scripts/vdrburn-dvd.sh.orig	2025-11-21 09:00:57.222131047 +0100
++++ vdr-burn-0.3.1/burn/scripts/vdrburn-dvd.sh	2025-11-21 09:05:49.974618630 +0100
 @@ -93,7 +93,8 @@
  		fi
  
