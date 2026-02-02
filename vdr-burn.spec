@@ -13,7 +13,7 @@
 
 Name:           vdr-%{pname}
 Version:        0.3.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        DVD writing plugin for VDR
 
 # genindex is GPL-2.0-or-later, rest GPL-1.0-or-later
@@ -113,6 +113,9 @@ install -Dpm 644 %{SOURCE1} \
 
 
 %changelog
+* Mon Feb 02 2026 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 0.3.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_44_Mass_Rebuild
+
 * Fri Nov 21 2025 Martin Gansser <martinkg@fedoraproject.org> - 0.3.1-1
 - Update to 0.3.1
 
